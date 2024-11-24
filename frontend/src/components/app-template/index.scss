@@ -1,0 +1,9 @@
+@import '../../styles/mixins/breakpoints.scss';
+
+.template-container {
+  min-height: calc(100vh - 9rem);
+
+  @include media-breakpoint-down($md) {
+    min-height: calc(100vh - 13rem);
+  }
+}

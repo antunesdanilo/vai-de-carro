@@ -1,0 +1,21 @@
+#splash {
+  background-color: theme('colors.primary.light');
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  align-content: center;
+}
+
+.loading {
+  position: absolute;
+  left: calc(50vw - 50px);
+  top: calc(50vh - 50px);
+}
+
+.welcome {
+  width: 100vw;
+  position: absolute;
+  top: 35vh;
+  font-size: 32px;
+  text-align: center;
+}

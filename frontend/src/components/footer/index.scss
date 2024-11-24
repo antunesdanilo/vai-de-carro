@@ -1,0 +1,28 @@
+@import '../../styles/mixins/breakpoints.scss';
+
+#footer {
+  height: 4rem;
+  background-color: #efefef;
+
+  .brand {
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    img {
+      height: 2.4rem;
+    }
+  }
+
+  @include media-breakpoint-down($md) {
+    height: 8rem;
+    .brand {
+      justify-content: center;
+    }
+    .copyright {
+      padding-top: 0.3rem;
+      display: flex !important;
+      text-align: center;
+      justify-content: center !important;
+    }
+  }
+}

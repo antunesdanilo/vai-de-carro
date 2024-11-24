@@ -1,0 +1,33 @@
+#skeleton-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.skeleton {
+  margin-bottom: 12px;
+  display: block;
+  background: #eee no-repeat;
+  background: linear-gradient(110deg, #f4f4f4 8%, #f7f7f7 18%, #f4f4f4 33%);
+  background-size: 200% 100%;
+  animation: 1.5s shine linear infinite;
+  background-size: 200% 100%;
+  border-radius: 6px;
+}
+
+.pulse {
+  animation: pulse 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation-delay: 0.5s;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}

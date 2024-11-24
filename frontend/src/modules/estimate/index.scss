@@ -1,0 +1,10 @@
+.option-item {
+  padding: 1rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  border: solid 1px #ccc;
+  &.selected {
+    border: solid 1px transparent;
+    outline: solid 2px blue;
+  }
+}

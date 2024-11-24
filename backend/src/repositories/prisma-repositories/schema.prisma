@@ -1,0 +1,56 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["debian-openssl-3.0.x", "native"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Customer {
+  id   String @id
+  name String
+
+  // Relations
+  rides Ride[]
+}
+
+model Driver {
+  id                  Int    @id
+  name                String
+  description         String
+  vehicle             String
+  pricePerKm          Int
+  minimumDistanteInKm Int
+
+  // Relations
+  reviews Review[]
+  rides   Ride[]
+}
+
+model Ride {
+  id          Int      @id
+  customerId  String
+  driverId    Int
+  origin      String
+  destination String
+  date        DateTime
+  distance    Int
+  duration    String
+  value       Int
+
+  // Relations
+  customer Customer @relation(fields: [customerId], references: [id])
+  driver   Driver   @relation(fields: [driverId], references: [id])
+}
+
+model Review {
+  id       Int    @id
+  driverId Int
+  rating   Int
+  comment  String
+
+  // Relations
+  driver Driver @relation(fields: [driverId], references: [id])
+}
