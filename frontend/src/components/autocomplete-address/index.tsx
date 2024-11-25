@@ -9,8 +9,8 @@ import {
 } from 'react-hook-form';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';
-import { MapsApiProvider } from '../../providers/interfaces/maps-api.provider';
-import { GoogleMapsApiProvider } from '../../providers/google-maps-api.provider';
+import { IMapsApiProvider } from '../../providers/interfaces/maps-api.provider';
+import { MapsApiProvider } from '../../providers/maps-api.provider';
 import { MapsApiPredictionDto } from '../../providers/dtos/maps-api-prediction.dto';
 import { toast } from 'react-toastify';
 import './index.scss';
@@ -26,7 +26,7 @@ interface AutoCompleteAddressProps<
   setValue: UseFormSetValue<TFieldValues>;
 }
 
-const mapsApiProvider: MapsApiProvider = new GoogleMapsApiProvider();
+const mapsApiProvider: IMapsApiProvider = new MapsApiProvider();
 
 const AutoCompleteAddress = <
   TFieldValues extends FieldValues,

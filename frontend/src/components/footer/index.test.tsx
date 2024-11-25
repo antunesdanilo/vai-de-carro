@@ -5,6 +5,8 @@ import { Footer } from './index.tsx';
 describe('Footer component', () => {
   it('renders footer correctly', () => {
     render(<Footer />);
-    expect(screen.getByText(/Footer/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Todos os direitos reservados/)
+    ).toBeInTheDocument();
   });
 });

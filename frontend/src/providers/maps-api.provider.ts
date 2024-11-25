@@ -1,10 +1,10 @@
 import BaseApiProvider from './base-api.provider';
 import { MapsApiPredictionDto } from './dtos/maps-api-prediction.dto';
-import { MapsApiProvider } from './interfaces/maps-api.provider';
+import { IMapsApiProvider } from './interfaces/maps-api.provider';
 
-export class GoogleMapsApiProvider
+export class MapsApiProvider
   extends BaseApiProvider
-  implements MapsApiProvider
+  implements IMapsApiProvider
 {
   async getPredictions(input: string): Promise<MapsApiPredictionDto[]> {
     return this.get<MapsApiPredictionDto[]>(
