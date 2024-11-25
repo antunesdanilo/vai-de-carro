@@ -26,8 +26,8 @@ const rideProvider: IRideProvider = new RideProvider();
 
 const Estimate: React.FC = () => {
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: 'AIzaSyDLVnvCm-ElL74_6owdP-muVQYbkC6yKIc', // Substitua por sua chave de API
-    id: 'google-maps-script', // Evita duplicar o script
+    googleMapsApiKey: process.env.GOOGLE_API_KEY as string,
+    id: 'google-maps-script',
   });
 
   const navigate = useNavigate();
