@@ -104,10 +104,14 @@ const AutoCompleteAddress = <
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
         onKeyDown={() => updateValue('')}
+        data-testid="keyword-input"
       />
 
       {predictions.length && isFocused ? (
-        <ul className="predictions-container mt-2">
+        <ul
+          className="predictions-container mt-2"
+          data-testid="predictions-list"
+        >
           {predictions.map((prediction) => (
             <li
               key={prediction.placeId}

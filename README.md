@@ -12,15 +12,16 @@ A arquitetura usa **Docker Compose** para facilitar a execução de ambas as par
 ## **Índice**
 
 1. [Descrição do Projeto](#descrição-do-projeto)
-2. [Funcionalidades Principais](#funcionalidades-principais)
-3. [Tecnologias Utilizadas](#tecnologias-utilizadas)
-4. [Download e Instalação](#download-e-instalação)
-5. [Execução com Docker Compose](#execução-com-docker-compose)
-6. [Execução com Servidores de Desenvolvimento](#execução-com-servidores-de-desenvolvimento)
-7. [Acesso](#acesso)
-8. [Testes](#testes)
-9. [Estrutura do Repositório](#estrutura-do-repositório)
-10. [Melhorias Futuras](#melhorias-futuras)
+2. [Boas Práticas Adotadas](#boas-práticas-adotadas)
+3. [Funcionalidades Principais](#funcionalidades-principais)
+4. [Tecnologias Utilizadas](#tecnologias-utilizadas)
+5. [Download e Instalação](#download-e-instalação)
+6. [Execução com Docker Compose](#execução-com-docker-compose)
+7. [Execução com Servidores de Desenvolvimento](#execução-com-servidores-de-desenvolvimento)
+8. [Acesso](#acesso)
+9. [Testes](#testes)
+10. [Estrutura do Repositório](#estrutura-do-repositório)
+11. [Melhorias Futuras](#melhorias-futuras)
 
 ---
 
@@ -36,6 +37,19 @@ O VaiDeCarro é uma solução para conectar usuários e motoristas para corridas
 O backend utiliza **NestJS** e **Prisma ORM** para manipulação de dados, e expõe APIs RESTful documentadas com **Swagger**.
 
 ---
+
+## **Boas Práticas Adotadas**
+
+O desenvolvimento do VaiDeCarro seguiu práticas recomendadas da engenharia de software, com foco em qualidade, manutenibilidade e documentação:
+
+- Padrões de Arquitetura: Backend organizado com princípios da Arquitetura Limpa e frontend estruturado com componentes reutilizáveis.
+- Manutenibilidade: Código modular e testável, permitindo fácil evolução do sistema.
+- Documentação:
+  - Swagger: APIs documentadas de forma acessível e visual no backend.
+  - Storybook: Documentação interativa dos componentes React, facilitando o entendimento e a reutilização no frontend.
+- Qualidade do Código: Uso de ferramentas como ESLint e Prettier para garantir consistência e legibilidade.
+- Testes Automatizados: Testes unitários e de integração cobrindo casos de uso essenciais no backend e frontend.
+- Design Responsivo: Interface ajustável para diferentes dispositivos, utilizando práticas modernas de CSS.
 
 ## **Funcionalidades Principais**
 
@@ -74,10 +88,13 @@ O backend utiliza **NestJS** e **Prisma ORM** para manipulação de dados, e exp
 - React, Redux Toolkit, React Router DOM
 - Google Maps API
 - Bootstrap
+- StoryBook para documentação dos componentes
 
 ### **Backend**
 
-- NestJS, Prisma ORM
+- NestJS
+- Prisma ORM
+- Google Maps API
 - Swagger para documentação da API
 - Docker e Docker Compose
 
@@ -171,6 +188,16 @@ $ yarn dev
 $ npm run dev
 ```
 
+### **Execute o storybook**
+
+```bash
+$ cd frontend
+
+$ yarn storybook
+# ou
+$ npm run storybook
+```
+
 ## **Acesso**
 
 Após a execução com servidores de desenvolvimento ou com Docker Compose, a aplicação estará disponível em:
@@ -178,6 +205,7 @@ Após a execução com servidores de desenvolvimento ou com Docker Compose, a ap
 - Frontend: http://localhost
 - Backend: http://localhost:8080
 - Swagger UI: http://localhost:8080/swagger (Documentação completa da API)
+- Story Book: http://localhost:6006
 
 ## **Estrutura do Repositório**
 
