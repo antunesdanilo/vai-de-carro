@@ -1,37 +1,28 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { AutoCompleteAddress } from './index';
-// import { toast } from 'react-toastify';
 import { MapsApiProvider } from '../../providers/maps-api.provider';
 
-const mapsApiProvider = new MapsApiProvider();
-
-const mapsApiSpy = jest.spyOn(mapsApiProvider, 'getPredictions');
-
-// jest.mock('react-toastify', () => ({
-//   toast: { error: jest.fn() },
-// }));
-
-// jest.mock('../../providers/maps-api.provider', () => {
-//   return {
-//     MapsApiProvider: jest.fn().mockImplementation(() => {
-//       return {
-//         getPredictions: jest.fn((keyword) => {
-//           if (!keyword) return Promise.resolve([]);
-//           return Promise.resolve([
-//             { description: 'Rua A, Cidade B', placeId: '1' },
-//             { description: 'Rua C, Cidade D', placeId: '2' },
-//           ]);
-//         }),
-//       };
-//     }),
-//   };
-// });
-
-// const mockMapsApiProvider = MapsApiProvider as jest.MockedClass<
-//   typeof MapsApiProvider
-// >;
-// const mockGetPredictions = jest.fn();
-// mockMapsApiProvider.prototype.getPredictions = mockGetPredictions;
+jest.mock('../../providers/maps-api.provider', () => {
+  return {
+    MapsApiProvider: jest.fn().mockImplementation(() => {
+      return {
+        getPredictions: jest.fn((keyword) => {
+          if (!keyword) return Promise.resolve([]);
+          return Promise.resolve([
+            { description: 'Rua A, Cidade B', placeId: '1' },
+            { description: 'Rua C, Cidade D', placeId: '2' },
+          ]);
+        }),
+      };
+    }),
+  };
+});
 
 describe('AutoCompleteAddress Component', () => {
   const defaultProps = {
@@ -71,85 +62,81 @@ describe('AutoCompleteAddress Component', () => {
     jest.clearAllMocks();
   });
 
+  it('should call getPredictions mock directly', async () => {
+    const instance = new MapsApiProvider();
+    const spy = jest.spyOn(instance, 'getPredictions');
+
+    await instance.getPredictions('Rua A');
+    expect(spy).toHaveBeenCalledWith('Rua A');
+  });
+
   it('should render the input field correctly', () => {
     render(<AutoCompleteAddress {...defaultProps} />);
-    expect(
-      screen.getByPlaceholderText('Digite um bairro, rua, cidade...')
-    ).toBeInTheDocument();
+    expect(screen.getByTestId('keyword-input')).toBeInTheDocument();
   });
 
   it('should update keyword on input change', () => {
     render(<AutoCompleteAddress {...defaultProps} />);
-    const input = screen.getByPlaceholderText(
-      'Digite um bairro, rua, cidade...'
-    );
+    const input = screen.getByTestId('keyword-input');
     fireEvent.change(input, { target: { value: 'Rua A' } });
     expect(input).toHaveValue('Rua A');
   });
 
   it('should fetch predictions after typing', async () => {
-    mapsApiSpy.mockImplementation((keyword) => {
-      console.log(keyword);
-      if (!keyword) return Promise.resolve([]);
-      return Promise.resolve([
-        { placeId: '1', description: `Mocked - ${keyword}` },
-      ]);
-    });
-
-    // mapsApiSpy.mockReturnValueOnce(
-    //   Promise.resolve([
-    //     { description: 'Rua A, Cidade B', placeId: '1' },
-    //     { description: 'Rua C, Cidade D', placeId: '2' },
-    //   ])
-    // );
-
-    // mockGetPredictions.mockResolvedValueOnce([
-    //   { placeId: '1', description: 'Rua A, Cidade B' },
-    // ]);
+    jest.useFakeTimers();
 
     render(<AutoCompleteAddress {...defaultProps} />);
 
-    const input = screen.getByPlaceholderText(
-      'Digite um bairro, rua, cidade...'
-    );
+    const input = screen.getByTestId('keyword-input');
+
     fireEvent.change(input, { target: { value: 'Rua A' } });
+    fireEvent.focus(input);
+
+    jest.advanceTimersByTime(1000);
 
     await waitFor(() => {
-      expect(mapsApiSpy).toHaveBeenCalledWith('Rua A');
+      const list = screen.getByTestId('predictions-list');
+      expect(list).toBeInTheDocument();
+
+      const items = list.querySelectorAll('li');
+
+      expect(items.length).toBe(2);
+      expect(items[0].textContent).toBe('Rua A, Cidade B');
     });
 
-    // expect(await screen.findByText('Rua A, Cidade B')).toBeInTheDocument();
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
   });
 
   it('should update value and close predictions on selection', async () => {
-    // mockGetPredictions.mockResolvedValueOnce([
-    //   { placeId: '1', description: 'Rua A, Cidade B' },
-    // ]);
-    // render(<AutoCompleteAddress {...defaultProps} />);
-    // const input = screen.getByPlaceholderText(
-    //   'Digite um bairro, rua, cidade...'
-    // );
-    // fireEvent.change(input, { target: { value: 'Rua A' } });
-    // const prediction = await screen.findByText('Rua A, Cidade B');
-    // fireEvent.click(prediction);
-    // expect(defaultProps.setValue).toHaveBeenCalledWith('address', 'Rua A', {
-    //   shouldValidate: true,
-    // });
-    // expect(input).toHaveValue('Rua A, Cidade B');
-    // expect(screen.queryByText('Rua C, Cidade D')).not.toBeInTheDocument();
-  });
+    jest.useFakeTimers();
 
-  it('should display error toast on API failure', async () => {
-    // mockGetPredictions.mockRejectedValueOnce(new Error('API Error'));
-    // render(<AutoCompleteAddress {...defaultProps} />);
-    // const input = screen.getByPlaceholderText(
-    //   'Digite um bairro, rua, cidade...'
-    // );
-    // fireEvent.change(input, { target: { value: 'Rua A, Cidade B' } });
-    // await waitFor(() => {
-    //   expect(toast.error).toHaveBeenCalledWith(
-    //     'Não foi possível carregar os endereços.'
-    //   );
-    // });
+    render(<AutoCompleteAddress {...defaultProps} />);
+    const input = screen.getByTestId('keyword-input');
+
+    fireEvent.change(input, { target: { value: 'Rua A' } });
+    fireEvent.focus(input);
+
+    jest.advanceTimersByTime(1000);
+
+    await waitFor(() => {
+      const list = screen.getByTestId('predictions-list');
+      expect(list).toBeInTheDocument();
+
+      const prediction = within(list).getByText('Rua A, Cidade B');
+
+      fireEvent.click(prediction);
+
+      fireEvent.blur(input);
+
+      jest.advanceTimersByTime(300);
+
+      expect(input).toHaveValue('Rua A, Cidade B');
+    });
+
+    await waitFor(() => {
+      console.log('passou aqui');
+      expect(screen.queryByTestId('predictions-list')).not.toBeInTheDocument();
+    });
   });
 });
