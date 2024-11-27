@@ -24,6 +24,7 @@ import { IRideProvider } from '../../../../providers/interfaces/ride.provider';
 import { ICustomerProvider } from '../../../../providers/interfaces/customer.provider';
 
 interface NewCustomerForm {
+  id: string;
   name: string;
 }
 
@@ -52,7 +53,7 @@ const Home: React.FC = () => {
     string | undefined
   >(undefined);
 
-  const newCustomerInitialState = { name: '' };
+  const newCustomerInitialState = { id: '', name: '' };
   const newCustomerForm = useForm<NewCustomerForm>({
     values: newCustomerInitialState,
   });
@@ -107,6 +108,7 @@ const Home: React.FC = () => {
     form: NewCustomerForm
   ) => {
     const createInput: CustomerCreateInput = {
+      id: form.id,
       name: form.name,
     };
 
@@ -219,6 +221,46 @@ const Home: React.FC = () => {
                 <div className="container form-container p-3">
                   <div className="row">
                     <div className="col-12">
+                      <Controller
+                        control={newCustomerForm.control}
+                        name="id"
+                        rules={{
+                          required: 'O id do cliente não pode ficar em branco',
+                          minLength: {
+                            value: 3,
+                            message:
+                              'O id do cliente deve possuir 3 caracteres ou mais',
+                          },
+                        }}
+                        render={({ field, fieldState }) => {
+                          return (
+                            <>
+                              <input
+                                {...field}
+                                type="text"
+                                className={classNames({
+                                  'form-control': true,
+                                  'is-valid':
+                                    newCustomerForm.formState.isSubmitted &&
+                                    !fieldState.error,
+                                  'is-invalid':
+                                    newCustomerForm.formState.isSubmitted &&
+                                    fieldState.error,
+                                })}
+                                ref={field.ref}
+                                placeholder="Digite o id do novo cliente"
+                              />
+                              {fieldState.error && (
+                                <div className="text-danger">
+                                  {fieldState.error.message}
+                                </div>
+                              )}
+                            </>
+                          );
+                        }}
+                      />
+                    </div>
+                    <div className="col-12 mt-3">
                       <Controller
                         control={newCustomerForm.control}
                         name="name"
