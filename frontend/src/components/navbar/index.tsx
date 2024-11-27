@@ -1,3 +1,4 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './index.scss';
 
@@ -9,7 +10,11 @@ const Navbar: React.FC = () => {
           <div className="col-4">
             <div className="brand">
               <Link to="/">
-                <img src="/logo.png"></img>
+                <img
+                  data-testid="brand"
+                  src="/logo.png"
+                  alt="Logomcara, contendo uma imagem com o desenho de um carro e o texto VaiDeCarro"
+                ></img>
               </Link>
             </div>
           </div>

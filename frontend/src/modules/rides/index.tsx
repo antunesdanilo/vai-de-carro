@@ -16,16 +16,22 @@ import { IDriverProvider } from '../../providers/interfaces/driver.provider';
 import { IRideProvider } from '../../providers/interfaces/ride.provider';
 import { ICustomerProvider } from '../../providers/interfaces/customer.provider';
 
+// Instancia dos provedores utilizados para obter dados de motoristas, clientes e viagens
 const customerProvider: ICustomerProvider = new CustomerProvider();
 const driverProvider: IDriverProvider = new DriverProvider();
 const rideProvider: IRideProvider = new RideProvider();
 
+/**
+ * Página  que permite ao usuário listar as corridas realizadas com opções de filtros
+ */
 const Rides: React.FC = () => {
+  // Obtém os parâmetros da URL, como "confirm", para mostrar mensagens de sucesso
   const [searchParams] = useSearchParams();
   const confirmParam = searchParams.get('confirm');
 
   const [showSuccessMessage, setShowSuccessMessage] = useState<boolean>(false);
 
+  // Estados locais para armazenar dados de clientes, motoristas, e viagens
   const [customers, setCustomers] = useState<CustomerDto[]>([]);
   const [customerId, setCustomerId] = useState<string | undefined>();
 
@@ -40,6 +46,7 @@ const Rides: React.FC = () => {
     CustomerRidesDto | undefined
   >(undefined);
 
+  // Efeito que executa quando o componente é montado
   useEffect(() => {
     if (confirmParam === 'success') {
       setShowSuccessMessage(true);
@@ -55,6 +62,7 @@ const Rides: React.FC = () => {
     }
   }, [customerId, driverId]);
 
+  // Função para obter a lista de cliente
   const getCustomers = () => {
     customerProvider
       .getCustomers()
@@ -75,6 +83,7 @@ const Rides: React.FC = () => {
       });
   };
 
+  // Função para obter a lista de motoristas
   const getDrivers = () => {
     driverProvider
       .getDrivers()
@@ -89,6 +98,7 @@ const Rides: React.FC = () => {
       });
   };
 
+  // Função para obter as corridas do cliente selecionado
   const getRides = (customerId: string, driverId: number | undefined) => {
     setCustomerRides(undefined);
 

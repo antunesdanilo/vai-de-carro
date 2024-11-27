@@ -22,9 +22,15 @@ import { RideProvider } from '../../providers/ride.provider';
 import { RideConfirmCreateInput } from '../../providers/inputs/ride-confirm-create.input';
 import { IRideProvider } from '../../providers/interfaces/ride.provider';
 
+// Instancia do provedor de viagem
 const rideProvider: IRideProvider = new RideProvider();
 
+/**
+ * Página que permite ao usuário visualizar a rota da viagem,
+ *  escolher um motorista e confirmar
+ */
 const Estimate: React.FC = () => {
+  // Carrega a API do Google Maps com a chave da API
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.GOOGLE_API_KEY as string,
     id: 'google-maps-script',
@@ -34,12 +40,15 @@ const Estimate: React.FC = () => {
 
   const dispatch = useAppDispatch();
 
+  // Obtém a estimativa do estado da aplicação
   const { estimate } = useAppSelector<EstimateSliceState>(selectEstimate);
 
+  // Define os estados locais para direções e controle de carregamento
   const [directions, setDirections] =
     useState<google.maps.DirectionsResult | null>(null);
   const [directionsLoaded, setDirectionsLoaded] = useState(false);
 
+  // Estado do motorista selecionado e erro de validação
   const [selectedDriver, setSelectedDriver] = useState<
     DriverOptionDto | undefined
   >(undefined);
@@ -47,8 +56,10 @@ const Estimate: React.FC = () => {
     undefined
   );
 
+  // Controle de estado do processo de confirmação
   const [isConfirming, setIsConfirming] = useState<boolean>(false);
 
+  // Verificação inicial para garantir que a estimativa foi carregada
   useEffect(() => {
     if (!estimate) {
       navigate('/');
@@ -56,11 +67,13 @@ const Estimate: React.FC = () => {
     }
   }, []);
 
+  // Efeito para carregar direções assim que a estimativa e a API do Google Maps estiverem prontas
   useEffect(() => {
     if (!estimate || directionsLoaded || !isLoaded) return;
 
     const directionsService = new google.maps.DirectionsService();
 
+    // Solicita as direções para o Google Maps
     directionsService.route(
       {
         origin: new google.maps.LatLng(
@@ -77,6 +90,7 @@ const Estimate: React.FC = () => {
     );
   }, [estimate?.origin, estimate?.destination, directionsLoaded, isLoaded]);
 
+  // Função de callback para processar os resultados das direções
   const handleDirectionsCallback = (
     result: google.maps.DirectionsResult | null,
     status: google.maps.DirectionsStatus
@@ -92,20 +106,24 @@ const Estimate: React.FC = () => {
     }
   };
 
+  // Função para selecionar um motorista e limpar mensagens de erro
   const handleSelectedDriver = (option: DriverOptionDto) => {
     setSelectedDriver(option);
     setErrorMessage(undefined);
   };
 
+  // Função para confirmar a viagem
   const handleConfirm = (
     estimate: StoredRideEstimateDto,
     selectedDriver: DriverOptionDto | undefined
   ) => {
+    // Verifica se o motorista foi selecionado
     if (!selectedDriver) {
       setErrorMessage('É necessário selecionar um motorista');
       return;
     }
 
+    // Prepara os dados de entrada para a confirmação da viagem
     const createInput: RideConfirmCreateInput = {
       customer_id: estimate.customerId,
       origin: estimate.originString,
@@ -119,8 +137,9 @@ const Estimate: React.FC = () => {
       value: selectedDriver.value,
     };
 
-    setIsConfirming(true);
+    setIsConfirming(true); // Inicia o processo de confirmação
 
+    // Chama o provedor para criar a confirmação da viagem
     rideProvider
       .createRideConfirm(createInput)
       .then(() => {
