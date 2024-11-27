@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { CustomerProvider } from '../../providers/customer.provider';
 import { CustomerDto } from '../home/dtos/customer.dto';
 import { AxiosError } from 'axios';
-import Skeleton from '../../components/skeleton';
+import { Skeleton } from '../../components/skeleton';
 import { DriverProvider } from '../../providers/driver.provider';
 import { DriverDto } from '../../providers/dtos/driver.dto';
 import './index.scss';
@@ -60,13 +60,18 @@ const Rides: React.FC = () => {
       .getCustomers()
       .then((customers: CustomerDto[]) => {
         setCustomers(customers);
-        setCustomerId(customers[0].id);
         setIsLoadingCustomers(false);
+        if (customers.length) {
+          setCustomerId(customers[0].id);
+        } else {
+          setIsLoadingRides(false);
+        }
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error);
         setCustomers([]);
         setIsLoadingCustomers(false);
-        toast.error('Não foi possível carregar a lista de clientes.');
+        toast.error('Não foi possível carregar a lista de clientes x.');
       });
   };
 
@@ -123,7 +128,7 @@ const Rides: React.FC = () => {
           </div>
         )}
 
-        <div className="row">
+        <div className="row mt-3">
           <div className="col-12 col-md-6">
             {!isLoadingCustomers ? (
               <>
@@ -138,6 +143,7 @@ const Rides: React.FC = () => {
                       {customer.name}
                     </option>
                   ))}
+                  {!customers.length && <option>-</option>}
                 </select>
               </>
             ) : (

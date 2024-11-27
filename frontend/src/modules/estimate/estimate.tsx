@@ -141,7 +141,7 @@ const Estimate: React.FC = () => {
       <PageTitle title="Estimativa de Viagem" />
 
       <div className="container">
-        <div className="row mb-4">
+        <div className="row mt-3 mb-4">
           {estimate && estimate.options.length ? (
             <div className="col-12 mb-4">
               Encontramos as seguintes opções para a sua viagem:

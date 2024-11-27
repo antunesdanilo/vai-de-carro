@@ -194,6 +194,17 @@ const Home: React.FC = () => {
       <form onSubmit={newCustomerForm.handleSubmit(onCreateNewCustomer)}>
         <div className="container">
           <div className="row">
+            <div className="col-12 text-info">
+              <div className="alert alert-primary" role="alert">
+                Caso seja o seu primeiro acesso, comece clicando em "Não
+                encontrou o seu nome na lista?", para visualizar um formulário
+                em que poderá
+                <br />
+                fornecer o seu nome e criar um ID de usuário.
+              </div>
+            </div>
+          </div>
+          <div className="row mt-3">
             <div className="col-12">
               <a href="#" onClick={onShowNewCustomerForm}>
                 Não encontrou o seu nome na lista?
@@ -282,7 +293,7 @@ const Home: React.FC = () => {
       </form>
 
       <form onSubmit={rideForm.handleSubmit(onRequestRide)}>
-        <div className="container">
+        <div className="container mb-4">
           <div className="row">
             <div className="col-12">
               <div className="container form-container p-3">

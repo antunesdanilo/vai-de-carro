@@ -33,4 +33,4 @@ const Skeleton: React.FC<SkeletonProps> = ({ width, height, repeat = 1 }) => {
   );
 };
 
-export default Skeleton;
+export { Skeleton };
