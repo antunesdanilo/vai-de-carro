@@ -1,27 +1,31 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { AutoCompleteAddress } from './index';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 import { MapsApiProvider } from '../../providers/maps-api.provider';
 
-jest.mock('react-toastify', () => ({
-  toast: { error: jest.fn() },
-}));
+const mapsApiProvider = new MapsApiProvider();
 
-jest.mock('../../providers/maps-api.provider', () => {
-  return {
-    MapsApiProvider: jest.fn().mockImplementation(() => {
-      return {
-        getPredictions: jest.fn((keyword) => {
-          if (!keyword) return Promise.resolve([]);
-          return Promise.resolve([
-            { description: 'Rua A, Cidade B', placeId: '1' },
-            { description: 'Rua C, Cidade D', placeId: '2' },
-          ]);
-        }),
-      };
-    }),
-  };
-});
+const mapsApiSpy = jest.spyOn(mapsApiProvider, 'getPredictions');
+
+// jest.mock('react-toastify', () => ({
+//   toast: { error: jest.fn() },
+// }));
+
+// jest.mock('../../providers/maps-api.provider', () => {
+//   return {
+//     MapsApiProvider: jest.fn().mockImplementation(() => {
+//       return {
+//         getPredictions: jest.fn((keyword) => {
+//           if (!keyword) return Promise.resolve([]);
+//           return Promise.resolve([
+//             { description: 'Rua A, Cidade B', placeId: '1' },
+//             { description: 'Rua C, Cidade D', placeId: '2' },
+//           ]);
+//         }),
+//       };
+//     }),
+//   };
+// });
 
 // const mockMapsApiProvider = MapsApiProvider as jest.MockedClass<
 //   typeof MapsApiProvider
@@ -84,11 +88,24 @@ describe('AutoCompleteAddress Component', () => {
   });
 
   it('should fetch predictions after typing', async () => {
-    const mockGetPredictions = MapsApiProvider.mock.instances[0].getPredictions;
+    mapsApiSpy.mockImplementation((keyword) => {
+      console.log(keyword);
+      if (!keyword) return Promise.resolve([]);
+      return Promise.resolve([
+        { placeId: '1', description: `Mocked - ${keyword}` },
+      ]);
+    });
 
-    mockGetPredictions.mockResolvedValueOnce([
-      { placeId: '1', description: 'Rua A, Cidade B' },
-    ]);
+    // mapsApiSpy.mockReturnValueOnce(
+    //   Promise.resolve([
+    //     { description: 'Rua A, Cidade B', placeId: '1' },
+    //     { description: 'Rua C, Cidade D', placeId: '2' },
+    //   ])
+    // );
+
+    // mockGetPredictions.mockResolvedValueOnce([
+    //   { placeId: '1', description: 'Rua A, Cidade B' },
+    // ]);
 
     render(<AutoCompleteAddress {...defaultProps} />);
 
@@ -98,7 +115,7 @@ describe('AutoCompleteAddress Component', () => {
     fireEvent.change(input, { target: { value: 'Rua A' } });
 
     await waitFor(() => {
-      expect(mockGetPredictions).toHaveBeenCalledWith('Rua A');
+      expect(mapsApiSpy).toHaveBeenCalledWith('Rua A');
     });
 
     // expect(await screen.findByText('Rua A, Cidade B')).toBeInTheDocument();

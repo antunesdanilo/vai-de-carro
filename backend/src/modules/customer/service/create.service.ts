@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CustomerRepository } from 'src/repositories/abstract-repositories/customer.repository';
 import { CustomerCreateInput } from '../inputs/customer-create.input';
 import { CustomerCreateData } from 'src/repositories/create-data/customer-create.data';
-import { v4 as uuidv4 } from 'uuid';
 import { CreateStatusDto } from 'src/app/dtos/create-status.dto';
 
 @Injectable()
@@ -23,7 +22,7 @@ export class CustomerCreateService {
     }
 
     const createData: CustomerCreateData = {
-      id: uuidv4(),
+      id: createInput.id,
       name: createInput.name,
     };
 
