@@ -350,6 +350,7 @@ const Home: React.FC = () => {
                         </div>
                       )}
                       <button
+                        type="button"
                         className="btn btn-danger ms-3"
                         onClick={onCancelNewCustomerForm}
                         disabled={newCustomerForm.formState.isSubmitting}
@@ -357,6 +358,7 @@ const Home: React.FC = () => {
                         Cancelar
                       </button>
                       <button
+                        type="submit"
                         className="btn btn-primary ms-3"
                         disabled={newCustomerForm.formState.isSubmitting}
                       >
