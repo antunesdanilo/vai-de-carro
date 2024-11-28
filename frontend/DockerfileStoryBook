@@ -18,6 +18,7 @@ RUN yarn install
 
 # Copia todos os arquivos para o contêiner
 COPY ./frontend .
+COPY .env ./.env
 
 # Executa o build do StoryBook (gera a pasta 'storybook-static')
 RUN yarn build-storybook
