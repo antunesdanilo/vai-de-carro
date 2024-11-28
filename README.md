@@ -148,6 +148,10 @@ ou
 $ npm run migrate:deploy
 ```
 
+### **Configure as variáveis de ambiente**
+
+Crie um arquivo .env na raíz do projeto, conforme o exemplo em .env.example
+
 ## Execução Com Docker Compose
 
 ### **Pré-requisitos**
@@ -167,6 +171,7 @@ $ docker-compose up --build
 
 - NodeJS<br/>
 - Yarn ou NPM
+- Copiar o arquivo .env da raíz para as pastas backend e frontend
 
 ### **Execute o backend**
 
