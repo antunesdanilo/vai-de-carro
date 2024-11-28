@@ -5,6 +5,12 @@ import { CustomerRepository } from 'src/repositories/abstract-repositories/custo
 import { DriverRepository } from 'src/repositories/abstract-repositories/driver.repository';
 import { CustomerRidesDto } from '../dtos/customer-rides.dto';
 
+/**
+ * Service to find rides for a customer, optionally filtered by a specific driver.
+ * It retrieves rides from the `RideRepository` based on the provided customer and driver IDs.
+ *
+ * @class FindRidesService
+ */
 @Injectable()
 export class FindRidesService {
   constructor(
@@ -13,6 +19,16 @@ export class FindRidesService {
     private readonly driverRepository: DriverRepository,
   ) {}
 
+  /**
+   * Retrieves a list of rides for a given customer, optionally filtered by driver ID.
+   *
+   * @param {string} customerId - The ID of the customer whose rides are to be fetched.
+   * @param {number} [driverId] - The optional ID of the driver to filter the rides by.
+   *
+   * @throws {HttpException} Throws an error if the customer or driver (if specified) is not found, or if no rides are found.
+   *
+   * @returns {Promise<CustomerRidesDto>} Returns a `CustomerRidesDto` object containing the customer ID and their associated rides.
+   */
   async handle(
     customerId: string,
     driverId?: number,

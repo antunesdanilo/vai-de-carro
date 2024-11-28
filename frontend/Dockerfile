@@ -10,7 +10,7 @@ RUN mkdir /usr/share/nginx/html
 # Define o diretório de trabalho
 WORKDIR /usr/share/nginx/html
 
-# Copia inicialmente apenas o package.json para o contêiner
+# Copia inicialmente apenas package.json e yarn.lock para o contêiner
 COPY ./frontend/package.json ./frontend/yarn.lock ./
 
 # Instala as dependências com Yarn
@@ -18,6 +18,7 @@ RUN yarn install
 
 # Copia todos os arquivos para o contêiner
 COPY ./frontend .
+COPY .env ./.env
 
 # Executa o build do React (gera a pasta 'build')
 RUN yarn build

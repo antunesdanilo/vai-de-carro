@@ -6,14 +6,38 @@ import { DriverDto } from '../dtos/driver.dto';
 import { DriverOptionDto } from '../dtos/driver-option.dto';
 import { MapsApiProvider } from 'src/providers/abstract-providers/map-api.provider';
 
+/**
+ * Service responsible for calculating the ride estimate based on origin and destination locations.
+ *
+ * It interacts with the driver repository and maps API provider to calculate:
+ * - Distance between origin and destination
+ * - Estimated travel time
+ * - Available drivers nearby, with their prices and reviews.
+ *
+ * @export
+ * @class GetRideEstimateService
+ */
 @Injectable()
 export class GetRideEstimateService {
+  /**
+   * Creates an instance of the service with the required dependencies.
+   * @param {DriverRepository} driverRepository - Driver repository
+   * @param {MapsApiProvider} mapsApiProvider - Maps API provider for geolocation and distance calculations
+   */
   constructor(
     private readonly driverRepository: DriverRepository,
     private readonly mapsApiProvider: MapsApiProvider,
   ) {}
 
+  /**
+   * Processes the ride estimate, calculating distance, duration, and listing available drivers.
+   *
+   * @param {RideEstimateInput} rideEstimateInput - Object containing the origin and destination data of the ride
+   * @returns {Promise<RideEstimateDto>} - Ride estimate with driver options
+   * @throws {HttpException} - Throws an exception if the origin and destination are the same
+   */
   async handle(rideEstimateInput: RideEstimateInput): Promise<RideEstimateDto> {
+    // Checks if the origin and destination are the same and throws an exception if true
     if (rideEstimateInput.origin === rideEstimateInput.destination) {
       throw new HttpException(
         {
@@ -25,6 +49,7 @@ export class GetRideEstimateService {
       );
     }
 
+    // Gets the distance and estimated duration between origin and destination
     const distanceMatrix = await this.mapsApiProvider.getDistance(
       rideEstimateInput.origin,
       rideEstimateInput.destination,
@@ -36,6 +61,7 @@ export class GetRideEstimateService {
       0,
     );
 
+    // Gets the geolocation of the origin and destination
     const originGeoLocation = await this.mapsApiProvider.getGeoLocation(
       rideEstimateInput.origin,
     );
@@ -44,10 +70,12 @@ export class GetRideEstimateService {
       rideEstimateInput.destination,
     );
 
+    // Finds nearby drivers based on the calculated distance
     const drivers: DriverDto[] = await this.driverRepository.findMany({
       distance: distanceInKilometers,
     });
 
+    // Processes the driver options, calculating price and sorting by value
     const driverOptions: DriverOptionDto[] = drivers
       .map((driver) => ({
         id: driver.id,
@@ -64,6 +92,7 @@ export class GetRideEstimateService {
         a.value < b.value ? -1 : 1,
       );
 
+    // Returns the ride estimate with the driver options
     return {
       origin: originGeoLocation,
       destination: destinationGeoLocation,

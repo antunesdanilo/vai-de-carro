@@ -135,7 +135,6 @@ describe('AutoCompleteAddress Component', () => {
     });
 
     await waitFor(() => {
-      console.log('passou aqui');
       expect(screen.queryByTestId('predictions-list')).not.toBeInTheDocument();
     });
   });

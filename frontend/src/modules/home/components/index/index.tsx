@@ -23,20 +23,31 @@ import { Link, useNavigate } from 'react-router-dom';
 import { IRideProvider } from '../../../../providers/interfaces/ride.provider';
 import { ICustomerProvider } from '../../../../providers/interfaces/customer.provider';
 
+/**
+ * Interface que define os campos do formulário de novo cliente.
+ */
 interface NewCustomerForm {
   id: string;
   name: string;
 }
 
+/**
+ * Interface que define os campos do formulário de solicitação de viagem.
+ */
 interface RideRequestForm {
   customerId: string;
   origin: string;
   destination: string;
 }
 
+// Instâncias dos provedores de clientes e corridas
 const customerProvider: ICustomerProvider = new CustomerProvider();
 const rideProvider: IRideProvider = new RideProvider();
 
+/**
+ * Página inicial que permite ao usuário solicitar uma estimativa de viagem
+ * e criar novos clientes, caso necessário.
+ */
 const Home: React.FC = () => {
   const navigate = useNavigate();
 
@@ -67,10 +78,16 @@ const Home: React.FC = () => {
     values: rideFormInitialState,
   });
 
+  /**
+   * Carrega a lista de clientes no momento da montagem do componente.
+   */
   useEffect(() => {
     getCustomers();
   }, []);
 
+  /**
+   * Atualiza o formulário de viagem com o ID do cliente recém-criado, se aplicável.
+   */
   useEffect(() => {
     if (customers.length && customerCreatedName !== undefined) {
       const customerCreated = customers.find(
@@ -84,6 +101,9 @@ const Home: React.FC = () => {
     }
   }, [customers, customerCreatedName]);
 
+  /**
+   * Obtém a lista de clientes do servidor.
+   */
   const getCustomers = () => {
     customerProvider
       .getCustomers()
@@ -95,15 +115,25 @@ const Home: React.FC = () => {
       });
   };
 
+  /**
+   * Exibe o formulário para criar um novo cliente.
+   */
   const onShowNewCustomerForm = () => {
     setShowNewCustomerForm(true);
   };
 
+  /**
+   * Cancela a exibição do formulário de novo cliente.
+   */
   const onCancelNewCustomerForm = () => {
     setShowNewCustomerForm(false);
     newCustomerForm.reset();
   };
 
+  /**
+   * Cria um novo cliente através do formulário.
+   * @param form Dados do novo cliente
+   */
   const onCreateNewCustomer: SubmitHandler<NewCustomerForm> = async (
     form: NewCustomerForm
   ) => {
@@ -135,6 +165,10 @@ const Home: React.FC = () => {
       });
   };
 
+  /**
+   * Solicita uma estimativa de viagem com base nos dados do formulário de viagem.
+   * @param form Dados do formulário de viagem
+   */
   const onRequestRide: SubmitHandler<RideRequestForm> = async (
     form: RideRequestForm
   ) => {
@@ -175,6 +209,7 @@ const Home: React.FC = () => {
     <>
       <PageTitle title="Solicite uma Viagem" />
 
+      {/* Seção de introdução */}
       <div className="container mt-3 mb-4">
         <div className="row">
           <div className="col-12">
@@ -183,6 +218,7 @@ const Home: React.FC = () => {
           </div>
         </div>
 
+        {/* Exibição da última estimativa, se disponível */}
         {estimate && (
           <div className="row mt-3">
             <div className="col-12">
@@ -193,6 +229,7 @@ const Home: React.FC = () => {
         )}
       </div>
 
+      {/* Formulário de criação de novo cliente */}
       <form onSubmit={newCustomerForm.handleSubmit(onCreateNewCustomer)}>
         <div className="container">
           <div className="row">
@@ -334,6 +371,7 @@ const Home: React.FC = () => {
         )}
       </form>
 
+      {/* Formulário para solicitar estimativa de viagem */}
       <form onSubmit={rideForm.handleSubmit(onRequestRide)}>
         <div className="container mb-4">
           <div className="row">

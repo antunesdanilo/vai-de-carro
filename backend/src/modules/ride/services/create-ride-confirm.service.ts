@@ -7,6 +7,9 @@ import { CreateStatusDto } from 'src/app/dtos/create-status.dto';
 import { RideConfirmCreateInput } from '../inputs/ride-confirm-create.input';
 import { generateNumericId } from 'src/utils/generate-numeric-id.util';
 
+/**
+ * Service to handle the creation and confirmation of rides.
+ */
 @Injectable()
 export class CreateRideConfirmService {
   constructor(
@@ -15,9 +18,17 @@ export class CreateRideConfirmService {
     private readonly rideRepository: RideRepository,
   ) {}
 
+  /**
+   * Handles the creation and confirmation of a ride.
+   *
+   * @param rideConfirmInput - Input data required to create a ride.
+   * @returns A CreateStatusDto indicating success or failure.
+   * @throws HttpException if validation fails or a required entity is not found.
+   */
   async handle(
     rideConfirmInput: RideConfirmCreateInput,
   ): Promise<CreateStatusDto> {
+    // Validate that origin and destination are not the same
     if (rideConfirmInput.origin === rideConfirmInput.destination) {
       throw new HttpException(
         {
@@ -29,6 +40,7 @@ export class CreateRideConfirmService {
       );
     }
 
+    // Verify the existence of the customer
     const customer = await this.customerRepository.findById(
       rideConfirmInput.customer_id,
     );
@@ -43,6 +55,7 @@ export class CreateRideConfirmService {
       );
     }
 
+    // Verify the existence of the driver
     const driver = await this.driverRepository.findById(
       rideConfirmInput.driver.id,
     );
@@ -57,6 +70,7 @@ export class CreateRideConfirmService {
       );
     }
 
+    // Validate the distance meets driver's minimum requirement
     if (driver.minimumDistanteInKm > rideConfirmInput.distance) {
       throw new HttpException(
         {
@@ -67,6 +81,7 @@ export class CreateRideConfirmService {
       );
     }
 
+    // Prepare ride data for creation
     const createData: RideCreateData = {
       id: generateNumericId(),
       customerId: customer.id,
@@ -79,6 +94,7 @@ export class CreateRideConfirmService {
       value: rideConfirmInput.value,
     };
 
+    // Persist the ride data in the repository
     this.rideRepository.create(createData);
 
     return { success: true };
